@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kingfly Crash Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #121212; color: #fff; margin: 0; padding: 20px; }
+    .qr { margin: 20px auto; width: 200px; }
+    .game-box { background: #1e1e1e; padding: 20px; border-radius: 10px; display: inline-block; }
+    button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; margin-top: 10px; }
+    .crash-multiplier { font-size: 32px; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>🚀 Welcome to Kingfly Crash Game</h1>
+
+  <div class="game-box">
+    <p class="crash-multiplier">Multiplier: <span id="multiplier">1.00x</span></p>
+    <button onclick="cashOut()">💸 Cash Out</button>
+    <p id="status"></p>
+  </div>
+
+  <h2>📥 Deposit UPI</h2>
+  <img src="qr.png" alt="Deposit QR" class="qr"/>
+
+  <h2>📤 Withdraw</h2>
+  <input type="text" id="upi" placeholder="Enter your UPI ID"/><br/>
+  <input type="number" id="amount" placeholder="Enter amount"/><br/>
+  <button onclick="withdraw()">Request Withdraw</button>
+
+  <script>
+    let multiplier = 1.0;
+    let crashed = false;
+    const multText = document.getElementById('multiplier');
+    const statusText = document.getElementById('status');
+
+    function startCrash() {
+      const interval = setInterval(() => {
+        if (crashed) return clearInterval(interval);
+        multiplier += 0.05;
+        multText.textContent = multiplier.toFixed(2) + 'x';
+        if (Math.random() < 0.02 + multiplier / 100) {
+          crashed = true;
+          multText.textContent = '💥 Crashed at ' + multiplier.toFixed(2) + 'x';
+          statusText.textContent = "You didn't cash out in time!";
+        }
+      }, 200);
+    }
+
+    function cashOut() {
+      if (crashed) return;
+      crashed = true;
+      statusText.textContent = "✅ You cashed out at " + multiplier.toFixed(2) + 'x';
+    }
+
+    function withdraw() {
+      const upi = document.getElementById('upi').value;
+      const amount = document.getElementById('amount').value;
+      if (!upi || !amount) {
+        alert("Please fill UPI and amount.");
+        return;
+      }
+      alert("Withdraw request sent!
+UPI: " + upi + "
+Amount: ₹" + amount);
+    }
+
+    startCrash();
+  </script>
+</body>
+</html>
